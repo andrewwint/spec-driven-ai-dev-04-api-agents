@@ -1,0 +1,8 @@
+# Example Feature Schema (from Course 3)
+features:
+  - name: age
+    type: integer
+  - name: income
+    type: float
+  - name: location
+    type: string
