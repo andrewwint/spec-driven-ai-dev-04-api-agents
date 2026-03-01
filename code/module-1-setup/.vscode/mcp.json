@@ -1,0 +1,22 @@
+{
+  "servers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "description": "Read project files",
+      "autoApprove": ["list_files", "read_file"]
+    },
+    "strands-agents": {
+      "command": "uvx",
+      "args": ["strands-agents-mcp-server"],
+      "description": "Strands Agents documentation",
+      "autoApprove": ["search_strands_docs", "get_strands_example"]
+    },
+    "aws-docs": {
+      "command": "uvx",
+      "args": ["awslabs.aws-documentation-mcp-server"],
+      "description": "AWS official documentation",
+      "autoApprove": ["search_documentation"]
+    }
+  }
+}

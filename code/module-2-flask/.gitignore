@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/mcp.json
+
+# Testing
+.pytest_cache/
+.ruff_cache/
+
+# Database
+data/*.db
+
+# Models
+models/*.pkl
+!models/.gitkeep
+
+# Environment
+.env
+
+# CDK
+cdk.out/

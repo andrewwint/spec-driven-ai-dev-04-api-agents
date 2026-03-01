@@ -1,0 +1,188 @@
+openapi: 3.0.3
+info:
+  title: Fraud Detection API
+  version: 1.0.0
+  description: API for fraud prediction and customer insights.
+
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Local development
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /predict:
+    post:
+      summary: Predict fraud likelihood
+      operationId: predictFraud
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredictRequest'
+      responses:
+        '200':
+          description: Successful prediction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictResponse'
+        '400':
+          description: Validation error
+
+  /customers:
+    get:
+      summary: List customers
+      operationId: listCustomers
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerList'
+
+    post:
+      summary: Create customer
+      operationId: createCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreate'
+      responses:
+        '201':
+          description: Customer created
+        '409':
+          description: Email already exists
+
+  /customers/{customer_id}:
+    get:
+      summary: Get customer
+      operationId: getCustomer
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Customer details
+        '404':
+          description: Not found
+
+  /insights/{customer_id}:
+    get:
+      summary: AI-generated customer insights
+      operationId: getCustomerInsights
+      parameters:
+        - name: customer_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: AI-generated insights
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightsResponse'
+        '504':
+          description: Analysis timed out
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+
+    PredictRequest:
+      type: object
+      required: [amount, merchant_category]
+      properties:
+        amount:
+          type: number
+        merchant_category:
+          type: string
+        time_since_last:
+          type: integer
+
+    PredictResponse:
+      type: object
+      properties:
+        prediction:
+          type: string
+          enum: [fraud, legitimate]
+        confidence:
+          type: number
+        model_version:
+          type: string
+
+    CustomerCreate:
+      type: object
+      required: [name, email]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+
+    CustomerList:
+      type: object
+      properties:
+        customers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Customer'
+        total:
+          type: integer
+
+    InsightsResponse:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+        insights:
+          type: string
+        model:
+          type: string
